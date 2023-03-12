@@ -12,7 +12,7 @@ type postalCodeProps = {
 }
 
 export default function Home() {
-  const [info, setInfo] = useState<postalCodeProps>({
+  let [info, setInfo] = useState<postalCodeProps>({
     cep: "",
     ddd: "",
     localidade: "",
@@ -20,10 +20,19 @@ export default function Home() {
   });
 
   const [code, setCode] = useState<any>('')
+  const [isShowing, setIsShowing] = useState<boolean>(false)
 
   async function searchPostalCode() {
-    const dataInfo = await getPostalCode(code)
-    setInfo(dataInfo)
+    try {
+      const dataInfo = await getPostalCode(code)
+      setInfo(dataInfo)
+
+      if (setInfo = dataInfo) {
+        setIsShowing(true)
+      }
+    } catch (error) {
+      setIsShowing(false)
+    }
   }
 
   return (
@@ -37,7 +46,7 @@ export default function Home() {
         <RectButton onPress={searchPostalCode} style={styles.button}><Text style={styles.buttonTitle}>Buscar</Text></RectButton>
       </View>
       <View>
-        {code && (
+        {isShowing && (
           <View style={{ alignItems: "center", justifyContent: "center", marginTop: 32 }}>
             <Text style={styles.postalCodeInfoTitle}>O CEP {info.cep} possui estes dados:</Text>
             <Text style={styles.postalCodeInfoTitle}>Cidade</Text>
